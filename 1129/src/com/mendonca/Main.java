@@ -1,49 +1,71 @@
 package com.mendonca;
 
-// resultado certo mas uri dis que esta errado
 
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Main {
 
-	public static void main(String[] args) {
-	
-		
+	public static void main(String[] args) throws IOException{
+
+		//Scanner console = new Scanner(new File("c:\\file.txt")); approved
 		Scanner console = new Scanner(System.in);
-		
-	    int nCases  = Integer.parseInt(console.nextLine());
-	    
-	    for(int index =0;index < nCases;index++) {
-	    	
-	    	String input  = console.nextLine();
-	    	System.out.println(findScore(input.split("([ ])+")));
-	    } 
-		
+		Map<Integer, String> scores = new HashMap<>();
+		scores.put(0, "A");
+		scores.put(1, "B");
+		scores.put(2, "C");
+		scores.put(3, "D");
+		scores.put(4, "E");
+
+		while (true) {
+
+			int nCases = Integer.parseInt(console.nextLine());
+
+			if (nCases == 0) {
+				break;
+			}
+
+			for (int index = 0; index < nCases; index++) {
+
+				String valueInput = console.nextLine();
+
+				String values[] = valueInput.split(" ");
+
+				if (Stream.of(values).map(numTxt -> Integer.parseInt(numTxt)).filter(number -> number <= 127).count() == 1) {
+					
+					int minValue = Stream.of(values).map(numTxt -> Integer.parseInt(numTxt))
+							.min((o1, o2) -> o1.compareTo(o2)).get();
+
+					String result = evalueteScore(minValue, values, scores);
+					System.out.println(result);
+
+				} else {
+					System.out.println("*");
+				}
+
+			}
+
+		}
 
 	}
-	
- public static String findScore(String[] inputs) {
-	 String[] letters = {"A","B","C","D","E"};
-		int pretos=0,indexLetra=0;
-	    
-	        for(int index=0;index < inputs.length ; index++) {
-	        	
-	        	if(Integer.parseInt(inputs[index]) <= 127 ) {
-	        		pretos++;
-	        		indexLetra = index;
-	        	}
-	        }
-	    	
-	        if(pretos == 1  ) {
-	        	return letters[indexLetra];
-	        }else {
-	        return 	"*";
-	        }
 
+	private static String evalueteScore(int minValue, String[] values, Map<Integer, String> scores) {
+		int currentIndex = 0;
+
+		for (int index = 0; index < values.length; index++) {
+
+			if (Integer.parseInt(values[index]) == minValue) {
+				currentIndex = index;
+				break;
+			}
+
+		}
+
+		return scores.get(currentIndex);
 	}
-	
-	
-	
 
 }
